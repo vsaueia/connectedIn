@@ -1,13 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from perfis.models import Perfil, Convite
 
 
+@login_required
 def index(request):
     perfis = Perfil.objects.all()
     perfil_logado = get_perfil_logado(request)
     return render(request, 'index.html', {"perfis": perfis, "perfil_logado": perfil_logado})
 
 
+@login_required
 def exibir(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     perfil_logado = get_perfil_logado(request)
@@ -16,6 +19,7 @@ def exibir(request, perfil_id):
     return render(request, 'perfil.html', {"perfil": perfil, "ja_eh_contato": ja_eh_contato})
 
 
+@login_required
 def convidar(request, perfil_id):
     perfil_convidado = Perfil.objects.get(id=perfil_id)
     perfil_logado = get_perfil_logado(request)
@@ -23,10 +27,12 @@ def convidar(request, perfil_id):
     return redirect('home')
 
 
+@login_required
 def get_perfil_logado(request):
-    return Perfil.objects.get(id=1)
+    return request.user.perfil
 
 
+@login_required
 def aceitar(request, convite_id):
     convite = Convite.objects.get(id=convite_id)
     convite.aceitar()
